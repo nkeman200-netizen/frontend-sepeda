@@ -27,4 +27,29 @@ const api = axios.create({
     }
     );
 
+    // 3. Mesin "Satpam Pintu Keluar" (Response Interceptor) - BARU!
+    api.interceptors.response.use(
+        (response) => {
+            // Kalau responnya sukses (200 OK), biarkan lewat
+            return response;
+        },
+        (error) => {
+            // Cek apakah server membalas error 401 atau 403 (Token mati/ditolak)
+            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                console.warn("Token sudah kadaluarsa atau tidak valid. Auto-logout berjalan...");
+                
+                // 1. Bersihkan semua ingatan browser
+                localStorage.clear();
+                
+                // 2. Tendang paksa ke halaman login
+                // (Catatan: Kita pakai window.location karena hook 'useNavigate' dari React Router 
+                // TIDAK BISA dipakai di dalam file JavaScript biasa / di luar komponen React)
+                window.location.href = '/login';
+            }
+            
+            // Tetap lempar errornya agar bisa ditangkap oleh blok 'catch' di file jsx kamu
+            return Promise.reject(error);
+        }
+    );
+
 export default api;

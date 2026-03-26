@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from './pages/Login'
 import Admin from './pages/Admin'
 import Mahasiswa from './pages/Mahasiswa'
+import Register from './pages/Register'
 
 function Satpam({children, allowedRole}) {
   const token= localStorage.getItem('TOKEN');
@@ -26,6 +27,7 @@ function App() {
   <Routes>
     <Route path="/" element={<Navigate to={"/login"}/>} />
     <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
 
     <Route path="/mahasiswa" element={<Satpam allowedRole={"mahasiswa"}><Mahasiswa /></Satpam>} />
     <Route path="/admin" element={<Satpam allowedRole={"admin"}><Admin /></Satpam>} />

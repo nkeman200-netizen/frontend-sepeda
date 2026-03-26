@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 👈 PASTIKAN INI ADA
 import Swal from 'sweetalert2'
 import api from '../api';
+import { list } from 'postcss';
 
 function Mahasiswa() {
   // 1. DEKLARASI STATE (Ingatan React)
@@ -82,12 +83,22 @@ function Mahasiswa() {
     const isPinjam= async ()=>{
         setPesanError('')
         try {
-            const response=  await api.get("/pinjam/semua");
-            if (!response.data.waktuKembali) {
-                if (response.data.username==localStorage.getItem("USERNAME")) {
-                    setIdPinjamAktif(response.data.idPinjam)
+            const response = await api.get("/pinjam/semua");
+            const list = response.data; // List ini adalah array JSON dari gambar
+            const userSekarang = localStorage.getItem("USERNAME");
+
+            // Gunakan forEach untuk mengecek satu per satu (Iterasi)
+            list.forEach((riwayat) => {
+                // 1. Cek apakah sepeda BELUM dikembalikan (waktuKembali === null)
+                if (riwayat.waktuKembali === null) {
+                    
+                    // 2. Cek apakah username peminjam SAMA dengan user yang sedang login
+                    if (riwayat.username === userSekarang) {
+                        // Simpan ke state agar tombol berubah jadi "Kembali"
+                        setIdPinjamAktif(riwayat.idPinjam);
+                    }
                 }
-            }
+            });
         } catch (error) {
             const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
                     setPesanError(pesan);

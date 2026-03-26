@@ -43,8 +43,8 @@ function Mahasiswa() {
             if(r.isConfirmed){
                 try {
                     const response= await api.post("/pinjam/"+idSepeda, {durasi: parseInt(r.value)})
-                    setIdPinjamAktif(response.data.idPinjam);
-                    localStorage.setItem("PINJAM",response.data.idPinjam)
+                    // setIdPinjamAktif(response.data.idPinjam);
+                    // localStorage.setItem("PINJAM",response.data.idPinjam)
                     muatSepeda();
                     Swal.fire('Berhasil','Sepeda berhasil dipinjam','success')
                 } catch (error) {
@@ -69,7 +69,6 @@ function Mahasiswa() {
                 try {
                     await api.put('/pinjam/'+idPinjam+'/kembali');
                     setIdPinjamAktif(null);
-                    localStorage.removeItem("PINJAM");
                     Swal.fire('Berhasil','Sepeda berhasil dikembalikan','success')
                     muatSepeda()
                 } catch (error) {
@@ -80,6 +79,21 @@ function Mahasiswa() {
         })
     }
 
+    const isPinjam= async ()=>{
+        setPesanError('')
+        try {
+            const response=  await api.get("/pinjam/semua");
+            if (!response.data.waktuKembali) {
+                if (response.data.username==localStorage.getItem("USERNAME")) {
+                    setIdPinjamAktif(response.data.idPinjam)
+                }
+            }
+        } catch (error) {
+            const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
+                    setPesanError(pesan);
+        }
+    }
+    
     const handleLogout= async ()=>{
         Swal.fire({
             title: 'Yakin mau keluar?',
@@ -111,13 +125,9 @@ function Mahasiswa() {
     // SIHIR TAHAN F5: Cek memori saat halaman pertama kali dibuka
     useEffect(() => {
         const token = localStorage.getItem('TOKEN');
-        const pinjamAktif = localStorage.getItem('PINJAM'); // Ambil ingatan pinjam
-
         if (token) {
-        setIsLoggedIn(true);
-        if (pinjamAktif) {
-            setIdPinjamAktif(parseInt(pinjamAktif)) ;
-        }
+            setIsLoggedIn(true);
+            isPinjam();
         }
     }, []); // Array kosong berarti HANYA JALAN SEKALI saat halaman pertama dimuat
 

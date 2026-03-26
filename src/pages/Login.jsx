@@ -18,6 +18,7 @@ function Login() {
             );
             localStorage.setItem('TOKEN', response.data.token);
             localStorage.setItem('ROLE', response.data.role);
+            localStorage.setItem('USERNAME', response.data.username);
             if (response.data.role=='mahasiswa') {
                 navigate('/mahasiswa');
             }else{

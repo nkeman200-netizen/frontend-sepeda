@@ -78,6 +78,7 @@ function Register() {
                         Daftar
                     </button>
                 </form>
+                <p>Sudah punya akun? Login di sini <a className=' hover:underline' href="/login">Login</a></p>
             </div>
         </div>
     );

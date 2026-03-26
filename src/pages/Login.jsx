@@ -72,7 +72,7 @@ function Login() {
                         Masuk
                     </button>
                 </form>
-                <p>Belum punya akun? Daftar di sini <a className=' hover:underline' href="/register">Daftar</a></p>
+                <p>Belum punya akun? Daftar di sini <a className=' hover:underline  text-blue-500' href="/register">Daftar</a></p>
             </div>
         </div>
     );

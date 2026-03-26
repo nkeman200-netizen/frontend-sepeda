@@ -29,8 +29,6 @@ function Login() {
         }
     };
 
-    const handleLogout= navigate('/register');
-    
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center font-sans">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -72,7 +70,7 @@ function Login() {
                         Masuk
                     </button>
                 </form>
-                <p>Belum punya akun? Daftar di sini <a className=' hover:underline  text-blue-500' href="/register">Daftar</a></p>
+                <p>Belum punya akun? Daftar di sini <a className=' hover:underline text-blue-500' href="/register">Daftar</a></p>
             </div>
         </div>
     );

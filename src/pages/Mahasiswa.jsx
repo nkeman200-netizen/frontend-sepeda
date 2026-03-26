@@ -91,8 +91,8 @@ function Mahasiswa() {
                 setIdPinjamAktif(response.data);
             }
         } catch (error) {
-            // Abaikan error kalau ternyata API merespon 404/Kosong (artinya memang tidak sedang pinjam)
-            console.log("User tidak sedang meminjam sepeda");
+            const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
+            setPesanError(pesan);
         }
     }
     

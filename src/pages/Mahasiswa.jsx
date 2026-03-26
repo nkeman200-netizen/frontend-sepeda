@@ -83,25 +83,16 @@ function Mahasiswa() {
     const isPinjam= async ()=>{
         setPesanError('')
         try {
-            const response = await api.get("/pinjam/semua");
-            const list = response.data; // List ini adalah array JSON dari gambar
-            const userSekarang = localStorage.getItem("USERNAME");
-
-            // Gunakan forEach untuk mengecek satu per satu (Iterasi)
-            list.forEach((riwayat) => {
-                // 1. Cek apakah sepeda BELUM dikembalikan (waktuKembali === null)
-                if (riwayat.waktuKembali === null) {
-                    
-                    // 2. Cek apakah username peminjam SAMA dengan user yang sedang login
-                    if (riwayat.username === userSekarang) {
-                        // Simpan ke state agar tombol berubah jadi "Kembali"
-                        setIdPinjamAktif(riwayat.idPinjam);
-                    }
-                }
-            });
+            // Cukup panggil rute khusus ini
+            const response = await api.get("/pinjam/aktif");
+            
+            // Kalau Backend membalas ada data (artinya dia sedang pinjam)
+            if (response.data) {
+                setIdPinjamAktif(response.data);
+            }
         } catch (error) {
-            const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
-                    setPesanError(pesan);
+            // Abaikan error kalau ternyata API merespon 404/Kosong (artinya memang tidak sedang pinjam)
+            console.log("User tidak sedang meminjam sepeda");
         }
     }
     

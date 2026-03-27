@@ -115,7 +115,6 @@ function Admin() {
     }
 
     const lihatPinjam= async (idSepeda)=>{
-        setIsLoadingSepeda(true)
         setPesanError('')
         try {
             const response = await api.get('/pinjam/riwayat/'+idSepeda);
@@ -145,8 +144,6 @@ function Admin() {
             })
         } catch (error) {
             setPesanError('eror server')
-        }finally{
-            setIsLoadingSepeda(false)
         }
     }
 

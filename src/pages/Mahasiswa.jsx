@@ -160,6 +160,7 @@ function Mahasiswa() {
     if (isLoggedIn) {
         return (
         <div className="min-h-screen bg-gray-100 p-8 font-sans">
+            {/* HEADER */}
             <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-md">
                 <div>       
                     <h1 className="text-3xl font-extrabold text-gray-800">Sepeda Kampus</h1>
@@ -187,7 +188,7 @@ function Mahasiswa() {
             </div>
 
             
-            {/* Notifikasi Sedang Meminjam (Ditaruh DI LUAR pengecekan tab agar selalu muncul) */}
+            {/* Notifikasi KEMBALIKAN*/}
             {idPinjamAktif ? (
                 <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg shadow-sm mb-8">
                     <h3 className="text-lg font-bold text-yellow-800 mb-4 flex items-center gap-2">
@@ -201,18 +202,19 @@ function Mahasiswa() {
                     </button>
                 </div>
             ) : null}
-            
+            {/* EROR PESAN */}
             {pesanError && (
                 <p style={{ color: 'red', marginTop: '10px' }}>{pesanError}</p>
             )}
 
             {/* ==== MULAI SIHIR TAB (Ternary Operator) ==== */}
+            {/* TAB 1: DAFTAR SEPEDA */}
             {activeTab === "sepeda" ? (
                 /* TAB 1: AREA GRID SEPEDA */
                 sepedaList.length === 0 ? (
                     <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
                 ) : (
-                    <>
+                    <> //LIST SEPEDA
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                             {sepedaList.map((sepeda) => (
                                 <div key={sepeda.id} className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}`}>
@@ -250,7 +252,7 @@ function Mahasiswa() {
                         </div>
                     </>
                 )
-            ) : (
+            ) : ( 
                 /* TAB 2: AREA TABEL RIWAYAT */
                 <div className="bg-white p-6 rounded-lg shadow-md mb-8">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi {localStorage.getItem('USERNAME')}</h2>
@@ -259,6 +261,7 @@ function Mahasiswa() {
                             <thead className="bg-gray-800 text-white">
                                 <tr>
                                     <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
+                                    <th className="py-3 px-4 rounded-tl-lg font-semibold">Durasi</th>
                                     <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
                                     <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
                                 </tr>
@@ -272,6 +275,7 @@ function Mahasiswa() {
                                     riwayatList.map((item) => (
                                         <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
                                             <td className="py-3 px-4">{item.merkSepeda}</td>
+                                            <td className="py-3 px-4">{item.durasi}</td>
                                             <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
                                             <td className="py-3 px-4">
                                                 {item.waktuKembali ? new Date(item.waktuKembali).toLocaleString('id-ID') : "Belum dikembalikan"}

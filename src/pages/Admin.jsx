@@ -120,6 +120,10 @@ function Admin() {
                             <td>: ${response.data.username}</td>
                         </tr>
                         <tr>
+                            <td style="font-weight: bold; padding: 5px 0;">Durasi</td>
+                            <td>: ${response.data.durasi}</td>
+                        </tr>
+                        <tr>
                             <td style="font-weight: bold; padding: 5px 0;">Waktu Pinjam</td>
                             <td>: ${new Date(response.data.waktuPinjam).toLocaleString('id-ID')}</td>
                         </tr>
@@ -210,6 +214,7 @@ function Admin() {
                                 <tr>
                                     <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
                                     <th className="py-3 px-4 font-semibold">Peminjam</th>
+                                    <th className="py-3 px-4 font-semibold">Durasi</th>
                                     <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
                                     <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
                                 </tr>
@@ -224,6 +229,7 @@ function Admin() {
                                 <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
                                     <td className="py-3 px-4">{item.merkSepeda}</td>
                                     <td className="py-3 px-4">{item.username}</td>
+                                    <td className="py-3 px-4">{item.durasi}</td>
                                     <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
                                     <td className="py-3 px-4">{
                                         item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 

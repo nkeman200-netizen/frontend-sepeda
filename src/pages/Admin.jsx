@@ -203,118 +203,127 @@ function Admin() {
                     section={"Kelola Sepeda"}
                 />
 
-            
-            {activeTab === "sepeda" ? (
-                <>
-                    {/* Section Kelola Sepeda (Form) */}
-                    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">Manajemen Sepeda</h2>
-                        {/* Pesan eror cetak */}
-                        {pesanError && (
-                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
-                                <p>{pesanError}</p>
-                            </div>
-                        )}
-
-                        {/* FORM TAMBAH SEPEDA */}
-                        <form onSubmit={tambahSepeda} className="flex flex-col sm:flex-row gap-4">
-                            <input 
-                                type="text" 
-                                placeholder="Masukkan merk sepeda baru..." 
-                                value={merkInput} 
-                                onChange={(e) => setMerkInput(e.target.value)} 
-                                required
-                                className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            /> 
-                            <button 
-                                type="submit" 
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold transition duration-200"
-                            >
-                                + Tambah Sepeda
-                            </button>
-                        </form>
+            {isLoadingSepeda ? ( //kalo lagi loading
+                    // Tampilan saat Loading
+                    <div className="flex flex-col justify-center items-center py-20">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-800"></div>
+                        <p className="mt-4 text-lg font-semibold text-gray-600">Sedang mengambil data sepeda...</p>
                     </div>
+                ) : ( //kalo ga loading
+                    <>
+                        {activeTab === "sepeda" ? ( //TAB SEPEDA
+                            <>
+                                {/* Section Kelola Sepeda (Form) */}
+                                <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                                    <h2 className="text-xl font-bold text-gray-800 mb-4">Manajemen Sepeda</h2>
+                                    {/* Pesan eror cetak */}
+                                    {pesanError && (
+                                        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+                                            <p>{pesanError}</p>
+                                        </div>
+                                    )}
 
-                    {/* Grid Daftar Sepeda */}
-                    {sepedaList.length === 0 ? (
-                        <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
-                    ) : (
-                            <DaftarSepeda 
-                                sepedaList={sepedaList}
-                                prosesPinjam={null}
-                                muatSepeda={muatSepeda}
-                                page={page}
-                                totalPages={totalPages}
-                                renderTombol={(sepeda)=>(
-                                    <>
-                                    <button 
-                                        onClick={() => editSepeda(sepeda)} 
-                                        className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button 
-                                        onClick={() => hapusSepeda(sepeda.id)} 
-                                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                    >
-                                        Hapus
-                                    </button>
-                                    
-                                    {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
-                                    {sepeda.status === "dipinjam" && (
+                                    {/* FORM TAMBAH SEPEDA */}
+                                    <form onSubmit={tambahSepeda} className="flex flex-col sm:flex-row gap-4">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Masukkan merk sepeda baru..." 
+                                            value={merkInput} 
+                                            onChange={(e) => setMerkInput(e.target.value)} 
+                                            required
+                                            className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        /> 
                                         <button 
-                                            onClick={() => lihatPinjam(sepeda.id)} 
-                                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                            type="submit" 
+                                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold transition duration-200"
                                         >
-                                            Lihat
+                                            + Tambah Sepeda
                                         </button>
-                                    )}
-                                    </>
+                                    </form>
+                                </div>
+
+                                {/* Grid Daftar Sepeda */}
+                                {sepedaList.length === 0 ? (
+                                    <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
+                                ) : (
+                                        <DaftarSepeda 
+                                            sepedaList={sepedaList}
+                                            muatSepeda={muatSepeda}
+                                            page={page}
+                                            totalPages={totalPages}
+                                            renderTombol={(sepeda)=>(
+                                                <>
+                                                <button 
+                                                    onClick={() => editSepeda(sepeda)} 
+                                                    className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button 
+                                                    onClick={() => hapusSepeda(sepeda.id)} 
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                                >
+                                                    Hapus
+                                                </button>
+                                                
+                                                {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
+                                                {sepeda.status === "dipinjam" && (
+                                                    <button 
+                                                        onClick={() => lihatPinjam(sepeda.id)} 
+                                                        className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                                    >
+                                                        Lihat
+                                                    </button>
+                                                )}
+                                                </>
+                                            )}
+                                        />
                                 )}
-                            />
-                    )}
-                </>
-            ):(
-                <>
-                    {/* Tabel Riwayat Global */}
-                    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi Global</h2>
-                        <div className="overflow-x-auto">
-                                <table className="min-w-full text-left border-collapse">
-                                    <thead className="bg-gray-800 text-white">
-                                        <tr>
-                                            <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
-                                            <th className="py-3 px-4 font-semibold">Peminjam</th>
-                                            <th className="py-3 px-4 font-semibold">Durasi</th>
-                                            <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
-                                            <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="text-gray-700">
-                                        {riwayatList.length==0?(
-                                            <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                                                <td colSpan="4" className="py-3 px-4 text-center">Data Kosong</td>
-                                            </tr>
-                                        ) : (                   
-                                        riwayatList.map((item) => (
-                                        <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                                            <td className="py-3 px-4">{item.merkSepeda}</td>
-                                            <td className="py-3 px-4">{item.username}</td>
-                                            <td className="py-3 px-4">{item.durasi}</td>
-                                            <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
-                                            <td className="py-3 px-4">{
-                                                item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 
-                                                : ("Belum dikembalikan")
-                                                }</td>
-                                        </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </>
-            )}
+                            </>
+                        ):( //TAB RIWAYAT
+                            <>
+                                {/* Tabel Riwayat Global */}
+                                <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                                    <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi Global</h2>
+                                    <div className="overflow-x-auto">
+                                            <table className="min-w-full text-left border-collapse">
+                                                <thead className="bg-gray-800 text-white">
+                                                    <tr>
+                                                        <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
+                                                        <th className="py-3 px-4 font-semibold">Peminjam</th>
+                                                        <th className="py-3 px-4 font-semibold">Durasi</th>
+                                                        <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
+                                                        <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="text-gray-700">
+                                                    {riwayatList.length==0?(
+                                                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                                            <td colSpan="4" className="py-3 px-4 text-center">Data Kosong</td>
+                                                        </tr>
+                                                    ) : (                   
+                                                    riwayatList.map((item) => (
+                                                    <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                                        <td className="py-3 px-4">{item.merkSepeda}</td>
+                                                        <td className="py-3 px-4">{item.username}</td>
+                                                        <td className="py-3 px-4">{item.durasi}</td>
+                                                        <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
+                                                        <td className="py-3 px-4">{
+                                                            item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 
+                                                            : ("Belum dikembalikan")
+                                                            }</td>
+                                                    </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </>
+                )}
+            
         </div>
         );
     }

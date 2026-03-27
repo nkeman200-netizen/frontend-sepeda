@@ -18,11 +18,14 @@ function Mahasiswa() {
     const [idPinjamAktif,setIdPinjamAktif]= useState(null); //untuk memunculkan kembali
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    // Tambahkan state ini
+    const [isLoadingSepeda, setIsLoadingSepeda] = useState(false);
     // Nilai awalnya adalah 'sepeda'
     const [activeTab, setActiveTab] = useState('sepeda');
     const navigate= useNavigate();
     
     const muatSepeda=async (targetPage=0)=>{ //dafault value parameter, kalo ga diisi ya berati 0
+        setIsLoadingSepeda(true)
         setPesanError('');
         try {
             const response= await api.get(`/sepeda?page=${targetPage}&size`);
@@ -32,6 +35,8 @@ function Mahasiswa() {
         } catch (error) {
             const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
             setPesanError(pesan);
+        }finally{
+            setIsLoadingSepeda(false)
         }
     }
 
@@ -191,39 +196,47 @@ function Mahasiswa() {
                 <p style={{ color: 'red', marginTop: '10px' }}>{pesanError}</p>
             )}
 
-            {/* ==== MULAI SIHIR TAB (Ternary Operator) ==== */}
-            {/* TAB 1: DAFTAR SEPEDA */}
-            {activeTab === "sepeda" ? (
-                /* TAB 1: AREA GRID SEPEDA */
-                sepedaList.length === 0 ? (
-                    <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
-                ) : (
-                    <> 
-                        <DaftarSepeda 
-                            sepedaList={sepedaList}
-                            prosesPinjam={prosesPinjam}
-                            muatSepeda={muatSepeda}
-                            page={page}
-                            totalPages={totalPages}
-                            renderTombol={(sepeda)=>( //biasanya kan pake ()=>{return()} nah ini membedakan, dia langsung return
-                                <>
-                                    {sepeda.status === "dipinjam" ? (
-                                        <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
-                                            Dipinjam
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => prosesPinjam(sepeda.id)} className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
-                                            Pinjam
-                                        </button>
-                                    )}
+            {/* TAB 1: AREA GRID SEPEDA */}
+            {isLoadingSepeda ? ( //kalo lagi loading
+                    // Tampilan saat Loading
+                    <div className="flex flex-col justify-center items-center py-20">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-800"></div>
+                        <p className="mt-4 text-lg font-semibold text-gray-600">Sedang mengambil data sepeda...</p>
+                    </div>
+                ) : ( //kalo ga loading
+                    <>
+                        {activeTab === "sepeda" ? ( //TAB SEPEDA
+                            /* TAB 1: AREA GRID SEPEDA */
+                            sepedaList.length === 0 ? ( //KALO KOSONG
+                                <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
+                            ) : ( //KALO ISI
+                                <> 
+                                    <DaftarSepeda 
+                                        sepedaList={sepedaList}
+                                        muatSepeda={muatSepeda}
+                                        page={page}
+                                        totalPages={totalPages}
+                                        renderTombol={(sepeda)=>( //biasanya kan pake ()=>{return()} nah ini membedakan, dia langsung return
+                                            <>
+                                                {sepeda.status === "dipinjam" ? (
+                                                    <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
+                                                        Dipinjam
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => prosesPinjam(sepeda.id)} className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
+                                                        Pinjam
+                                                    </button>
+                                                )}
+                                            </>
+                                        )}
+                                    />
                                 </>
-                            )}
-                        />
+                            )
+                        ) : ( //TAB RIWAYAT
+                            /* TAB 2: AREA TABEL RIWAYAT */
+                            <TabelRiwayat riwayatList={riwayatList}/>
+                        )}
                     </>
-                )
-            ) : ( 
-                /* TAB 2: AREA TABEL RIWAYAT */
-                <TabelRiwayat riwayatList={riwayatList}/>
             )}
             {/* ==== SELESAI SIHIR TAB ==== */}
         </div>

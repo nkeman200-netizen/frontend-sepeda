@@ -21,15 +21,19 @@ function Admin() {
     const [isLoadingSepeda, setIsLoadingSepeda] = useState(false);
     const navigate= useNavigate();
 
-    const muatSepeda=async ()=>{   
+    const muatSepeda=async (targetPage=0)=>{ //dafault value parameter, kalo ga diisi ya berati 0
+        setIsLoadingSepeda(true)
         setPesanError('');
         try {
-        const response= await api.get('/sepeda');
-        setSepedaList(response.data.content) //response bosy disimpen di response.data.content (kalo data nya array/banyak)
-        setTotalPages(response.data.totalPages)
-        setPage(targetPage)
+            const response= await api.get(`/sepeda?page=${targetPage}&size`);
+            setSepedaList(response.data.content)
+            setTotalPages(response.data.totalPages)
+            setPage(targetPage)
         } catch (error) {
-        setPesanError("gagal menghubungi server");
+            const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
+            setPesanError(pesan);
+        }finally{
+            setIsLoadingSepeda(false)
         }
     }
 

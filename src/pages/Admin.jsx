@@ -205,123 +205,131 @@ function Admin() {
                 </button>
             </div>
 
-            {/* Tabel Riwayat Global */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi Global</h2>
-                <div className="overflow-x-auto">
-                        <table className="min-w-full text-left border-collapse">
-                            <thead className="bg-gray-800 text-white">
-                                <tr>
-                                    <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
-                                    <th className="py-3 px-4 font-semibold">Peminjam</th>
-                                    <th className="py-3 px-4 font-semibold">Durasi</th>
-                                    <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
-                                    <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-700">
-                                {riwayatList.length==0?(
-                                    <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                                        <td colSpan="4" className="py-3 px-4 text-center">Data Kosong</td>
-                                    </tr>
-                                ) : (                   
-                                riwayatList.map((item) => (
-                                <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                                    <td className="py-3 px-4">{item.merkSepeda}</td>
-                                    <td className="py-3 px-4">{item.username}</td>
-                                    <td className="py-3 px-4">{item.durasi}</td>
-                                    <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
-                                    <td className="py-3 px-4">{
-                                        item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 
-                                        : ("Belum dikembalikan")
-                                        }</td>
-                                </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {/* Section Kelola Sepeda (Form) */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Manajemen Sepeda</h2>
-                {/* Pesan eror cetak */}
-                {pesanError && (
-                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
-                        <p>{pesanError}</p>
+            
+            {activeTab === "sepeda" ? (
+                <>
+                    {/* Section Kelola Sepeda (Form) */}
+                    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4">Manajemen Sepeda</h2>
+                        {/* Pesan eror cetak */}
+                        {pesanError && (
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+                                <p>{pesanError}</p>
+                            </div>
+                        )}
+
+                        <form onSubmit={tambahSepeda} className="flex flex-col sm:flex-row gap-4">
+                            <input 
+                                type="text" 
+                                placeholder="Masukkan merk sepeda baru..." 
+                                value={merkInput} 
+                                onChange={(e) => setMerkInput(e.target.value)} 
+                                required
+                                className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            /> 
+                            <button 
+                                type="submit" 
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold transition duration-200"
+                            >
+                                + Tambah Sepeda
+                            </button>
+                        </form>
                     </div>
-                )}
 
-                <form onSubmit={tambahSepeda} className="flex flex-col sm:flex-row gap-4">
-                    <input 
-                        type="text" 
-                        placeholder="Masukkan merk sepeda baru..." 
-                        value={merkInput} 
-                        onChange={(e) => setMerkInput(e.target.value)} 
-                        required
-                        className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    /> 
-                    <button 
-                        type="submit" 
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold transition duration-200"
-                    >
-                        + Tambah Sepeda
-                    </button>
-                </form>
-            </div>
-
-            {/* Grid Daftar Sepeda */}
-            {sepedaList.length === 0 ? (
-                <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {sepedaList.map((sepeda) => (
-                        <div 
-                            key={sepeda.id} 
-                            // Sihir Kondisional Tailwind:
-                            // Jika dipinjam (merah muda), jika tersedia (hijau muda). 
-                            // Kita juga tambahkan garis tebal di kiri (border-l(left)-4) sebagai aksen.
-                            className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md    
-                                ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}
-                            `}
-                        >
-                            <div>
-                                <h3 className="text-xl font-bold text-gray-800">{sepeda.merk}</h3>
-                                <p className={`text-sm font-semibold mt-1 uppercase tracking-wider
-                                    ${sepeda.status === 'dipinjam' ? 'text-red-600' : 'text-green-600'}
-                                `}>
-                                    {sepeda.status}
-                                </p>
-                            </div>
-
-                            {/* Deretan Tombol Aksi */}
-                            <div className="mt-6 flex gap-2">
-                                <button 
-                                    onClick={() => editSepeda(sepeda)} 
-                                    className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                    {/* Grid Daftar Sepeda */}
+                    {sepedaList.length === 0 ? (
+                        <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            {sepedaList.map((sepeda) => (
+                                <div 
+                                    key={sepeda.id} 
+                                    // Sihir Kondisional Tailwind:
+                                    // Jika dipinjam (merah muda), jika tersedia (hijau muda). 
+                                    // Kita juga tambahkan garis tebal di kiri (border-l(left)-4) sebagai aksen.
+                                    className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md    
+                                        ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}
+                                    `}
                                 >
-                                    Edit
-                                </button>
-                                <button 
-                                    onClick={() => hapusSepeda(sepeda.id)} 
-                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                >
-                                    Hapus
-                                </button>
-                                
-                                {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
-                                {sepeda.status === "dipinjam" && (
-                                    <button 
-                                        onClick={() => lihatPinjam(sepeda.id)} 
-                                        className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                    >
-                                        Lihat
-                                    </button>
-                                )}
-                            </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-800">{sepeda.merk}</h3>
+                                        <p className={`text-sm font-semibold mt-1 uppercase tracking-wider
+                                            ${sepeda.status === 'dipinjam' ? 'text-red-600' : 'text-green-600'}
+                                        `}>
+                                            {sepeda.status}
+                                        </p>
+                                    </div>
+
+                                    {/* Deretan Tombol Aksi */}
+                                    <div className="mt-6 flex gap-2">
+                                        <button 
+                                            onClick={() => editSepeda(sepeda)} 
+                                            className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button 
+                                            onClick={() => hapusSepeda(sepeda.id)} 
+                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                        >
+                                            Hapus
+                                        </button>
+                                        
+                                        {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
+                                        {sepeda.status === "dipinjam" && (
+                                            <button 
+                                                onClick={() => lihatPinjam(sepeda.id)} 
+                                                className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                            >
+                                                Lihat
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    )}
+                    </>
+            ):(
+                <>
+                    {/* Tabel Riwayat Global */}
+                    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi Global</h2>
+                        <div className="overflow-x-auto">
+                                <table className="min-w-full text-left border-collapse">
+                                    <thead className="bg-gray-800 text-white">
+                                        <tr>
+                                            <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
+                                            <th className="py-3 px-4 font-semibold">Peminjam</th>
+                                            <th className="py-3 px-4 font-semibold">Durasi</th>
+                                            <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
+                                            <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="text-gray-700">
+                                        {riwayatList.length==0?(
+                                            <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                                <td colSpan="4" className="py-3 px-4 text-center">Data Kosong</td>
+                                            </tr>
+                                        ) : (                   
+                                        riwayatList.map((item) => (
+                                        <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                            <td className="py-3 px-4">{item.merkSepeda}</td>
+                                            <td className="py-3 px-4">{item.username}</td>
+                                            <td className="py-3 px-4">{item.durasi}</td>
+                                            <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
+                                            <td className="py-3 px-4">{
+                                                item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 
+                                                : ("Belum dikembalikan")
+                                                }</td>
+                                        </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </>
             )}
         </div>
         );

@@ -4,6 +4,8 @@ import Swal from 'sweetalert2'
 import api from '../api';
 import { list } from 'postcss';
 import TabelRiwayat from '../components/TabelRiwayat';
+import DaftarSepeda from '../components/DaftarSepeda';
+import Header from '../components/Header';
 
 function Mahasiswa() {
   // 1. DEKLARASI STATE (Ingatan React)
@@ -162,31 +164,12 @@ function Mahasiswa() {
         return (
         <div className="min-h-screen bg-gray-100 p-8 font-sans">
             {/* HEADER */}
-            <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-md">
-                <div>       
-                    <h1 className="text-3xl font-extrabold text-gray-800">Sepeda Kampus</h1>
-                </div>
-
-                {/* Bagian Menu Tengah */}
-                <div className="flex gap-4">
-                    <button 
-                        onClick={() => setActiveTab('sepeda')}
-                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'sepeda' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
-                    >
-                        🚲 Daftar Sepeda
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('riwayat')}
-                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'riwayat' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
-                    >
-                        📜 Riwayatku
-                    </button>
-                </div>
-
-                <button onClick={() => handleLogout()} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md font-semibold transition">
-                    Logout
-                </button>
-            </div>
+            <Header 
+                activeTab={activeTab}
+                section={"Daftar sepeda"}
+                handleLogout={handleLogout}
+                setActiveTab={setActiveTab}
+            />
 
             
             {/* Notifikasi KEMBALIKAN*/}
@@ -216,41 +199,26 @@ function Mahasiswa() {
                     <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
                 ) : (
                     <> 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            {sepedaList.map((sepeda) => (
-                                <div key={sepeda.id} className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}`}>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-800">{sepeda.merk}</h3>
-                                        <p className={`text-sm font-semibold mt-1 uppercase tracking-wider ${sepeda.status === 'dipinjam' ? 'text-red-600' : 'text-green-600'}`}>
-                                            {sepeda.status}
-                                        </p>
-                                    </div>
-                                    <div className="mt-6 flex gap-2">
-                                        {sepeda.status === "dipinjam" ? (
-                                            <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
-                                                Dipinjam
-                                            </button>
-                                        ) : (
-                                            <button onClick={() => prosesPinjam(sepeda.id)} className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
-                                                Pinjam
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        {/* Kontrol Paginasi */}
-                        <div className="flex justify-center items-center gap-4 mt-8">
-                            <button onClick={() => muatSepeda(page - 1)} disabled={page === 0} className="px-4 py-2 bg-gray-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-700">
-                                Sebelumnya
-                            </button>
-                            <span className="font-semibold text-gray-700">
-                                Halaman {page + 1} dari {totalPages}
-                            </span>
-                            <button onClick={() => muatSepeda(page + 1)} disabled={page + 1 >= totalPages} className="px-4 py-2 bg-gray-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-700">
-                                Selanjutnya
-                            </button>
-                        </div>
+                        <DaftarSepeda 
+                            sepedaList={sepedaList}
+                            prosesPinjam={prosesPinjam}
+                            muatSepeda={muatSepeda}
+                            page={page}
+                            totalPages={totalPages}
+                            renderTombol={(sepeda)=>( //biasanya kan pake ()=>{return()} nah ini membedakan, dia langsung return
+                                <>
+                                    {sepeda.status === "dipinjam" ? (
+                                        <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
+                                            Dipinjam
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => prosesPinjam(sepeda.id)} className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
+                                            Pinjam
+                                        </button>
+                                    )}
+                                </>
+                            )}
+                        />
                     </>
                 )
             ) : ( 

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { resolvePath, useNavigate } from 'react-router-dom'; // 👈 PASTIKAN INI ADA
 import Swal from 'sweetalert2';
 import api from '../api';
+import Header from '../components/Header';
+import DaftarSepeda from '../components/DaftarSepeda';
 
 function Admin() {
   // 1. DEKLARASI STATE (Ingatan React)
@@ -13,6 +15,8 @@ function Admin() {
     const [merkInput, setMerkInput]= useState('');
     const [riwayatList, setRiwayatList]= useState([]);
     const [activeTab, setActiveTab] = useState('sepeda');
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const navigate= useNavigate();
 
     const muatSepeda=async ()=>{   
@@ -194,31 +198,12 @@ function Admin() {
         return (
         <div className="min-h-screen bg-gray-100 p-8 font-sans">
             {/* HEADER */}
-            <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-md">
-                <div>       
-                    <h1 className="text-3xl font-extrabold text-gray-800">Sepeda Kampus</h1>
-                </div>
-
-                {/* Bagian Menu Tengah */}
-                <div className="flex gap-4">
-                    <button 
-                        onClick={() => setActiveTab('sepeda')}
-                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'sepeda' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
-                    >
-                        🚲 Kelola Sepeda
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('riwayat')}
-                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'riwayat' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
-                    >
-                        📜 Riwayat
-                    </button>
-                </div>
-
-                <button onClick={() => handleLogout()} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md font-semibold transition">
-                    Logout
-                </button>
-            </div>
+                <Header 
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    handleLogout={handleLogout}
+                    section={"Kelola Sepeda"}
+                />
 
             
             {activeTab === "sepeda" ? (
@@ -257,6 +242,39 @@ function Admin() {
                         <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <DaftarSepeda 
+                                sepedaList={sepedaList}
+                                prosesPinjam={null}
+                                muatSepeda={muatSepeda}
+                                page={page}
+                                totalPages={totalPages}
+                                renderTombol={(sepeda)=>(
+                                    <>
+                                    <button 
+                                        onClick={() => editSepeda(sepeda)} 
+                                        className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button 
+                                        onClick={() => hapusSepeda(sepeda.id)} 
+                                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                    >
+                                        Hapus
+                                    </button>
+                                    
+                                    {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
+                                    {sepeda.status === "dipinjam" && (
+                                        <button 
+                                            onClick={() => lihatPinjam(sepeda.id)} 
+                                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
+                                        >
+                                            Lihat
+                                        </button>
+                                    )}
+                                    </>
+                                )}
+                            />
                             {sepedaList.map((sepeda) => (
                                 <div 
                                     key={sepeda.id} 

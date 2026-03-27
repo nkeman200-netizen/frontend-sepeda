@@ -15,6 +15,8 @@ function Mahasiswa() {
     const [idPinjamAktif,setIdPinjamAktif]= useState(null); //untuk memunculkan kembali
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    // Nilai awalnya adalah 'sepeda'
+    const [activeTab, setActiveTab] = useState('sepeda');
     const navigate= useNavigate();
     
     const muatSepeda=async (targetPage=0)=>{ //dafault value parameter, kalo ga diisi ya berati 0
@@ -159,53 +161,33 @@ function Mahasiswa() {
         return (
         <div className="min-h-screen bg-gray-100 p-8 font-sans">
             <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-md">
-                <div>
-                    <h1 className="text-3xl font-extrabold text-gray-800">Dashboard Peminjaman</h1>
-                    <p className="text-gray-500 mt-1">Sistem Peminjaman Sepeda Kampus</p>
+                <div>       
+                    <h1 className="text-3xl font-extrabold text-gray-800">Sepeda Kampus</h1>
                 </div>
-                <button 
-                    onClick={() => handleLogout()} 
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md font-semibold transition duration-200"
-                >
+
+                {/* Bagian Menu Tengah */}
+                <div className="flex gap-4">
+                    <button 
+                        onClick={() => setActiveTab('sepeda')}
+                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'sepeda' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        🚲 Daftar Sepeda
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('riwayat')}
+                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'riwayat' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        📜 Riwayatku
+                    </button>
+                </div>
+
+                <button onClick={() => handleLogout()} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md font-semibold transition">
                     Logout
                 </button>
             </div>
 
-            {/* Tabel Riwayat Global */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi {localStorage.getItem('USERNAME')}</h2>
-                <div className="overflow-x-auto">
-                        <table className="min-w-full text-left border-collapse">
-                            <thead className="bg-gray-800 text-white">
-                                <tr>
-                                    <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
-                                    <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
-                                    <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-700">
-                                {riwayatList.length==0?(
-                                    <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                                        <td colSpan="4" className="py-3 px-4 text-center">Data Kosong</td>
-                                    </tr>
-                                ) : (                   
-                                riwayatList.map((item) => (
-                                <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
-                                    <td className="py-3 px-4">{item.merkSepeda}</td>
-                                    <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
-                                    <td className="py-3 px-4">{
-                                        item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 
-                                        : ("Belum dikembalikan")
-                                        }</td>
-                                </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
             
-            {/* Notifikasi Sedang Meminjam */}
+            {/* Notifikasi Sedang Meminjam (Ditaruh DI LUAR pengecekan tab agar selalu muncul) */}
             {idPinjamAktif ? (
                 <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg shadow-sm mb-8">
                     <h3 className="text-lg font-bold text-yellow-800 mb-4 flex items-center gap-2">
@@ -221,81 +203,88 @@ function Mahasiswa() {
             ) : null}
             
             {pesanError && (
-            <p style={{ color: 'red', marginTop: '10px' }}>{pesanError}</p>
+                <p style={{ color: 'red', marginTop: '10px' }}>{pesanError}</p>
             )}
-            {/* Grid Daftar Sepeda */}
-            {sepedaList.length === 0 ? (
-                <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
-            ) : (
-                <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        {sepedaList.map((sepeda) => (
-                            <div 
-                                key={sepeda.id} 
-                                // Sihir Kondisional Tailwind:
-                                // Jika dipinjam (merah muda), jika tersedia (hijau muda). 
-                                // Kita juga tambahkan garis tebal di kiri (border-l(left)-4) sebagai aksen.
-                                className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md    
-                                    ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}
-                                `}
-                            >
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-800">{sepeda.merk}</h3>
-                                    <p className={`text-sm font-semibold mt-1 uppercase tracking-wider
-                                        ${sepeda.status === 'dipinjam' ? 'text-red-600' : 'text-green-600'}
-                                    `}>
-                                        {sepeda.status}
-                                    </p>
-                                </div>
 
-                                {/* Deretan Tombol Aksi */}
-                                <div className="mt-6 flex gap-2">
-                                    
-                                    {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
-                                    {sepeda.status === "dipinjam" ? (
-                                        <button 
-                                            
-                                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                        >
-                                            Dipinjam
-                                        </button>
-                                    ) : (
-                                        <button 
-                                        onClick={() => prosesPinjam(sepeda.id)} 
-                                        className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                    >
-                                        Pinjam
-                                    </button>
-                                    )}
+            {/* ==== MULAI SIHIR TAB (Ternary Operator) ==== */}
+            {activeTab === "sepeda" ? (
+                /* TAB 1: AREA GRID SEPEDA */
+                sepedaList.length === 0 ? (
+                    <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            {sepedaList.map((sepeda) => (
+                                <div key={sepeda.id} className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}`}>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-800">{sepeda.merk}</h3>
+                                        <p className={`text-sm font-semibold mt-1 uppercase tracking-wider ${sepeda.status === 'dipinjam' ? 'text-red-600' : 'text-green-600'}`}>
+                                            {sepeda.status}
+                                        </p>
+                                    </div>
+                                    <div className="mt-6 flex gap-2">
+                                        {sepeda.status === "dipinjam" ? (
+                                            <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
+                                                Dipinjam
+                                            </button>
+                                        ) : (
+                                            <button onClick={() => prosesPinjam(sepeda.id)} className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition">
+                                                Pinjam
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            
-                        ))}
-                    </div>
+                            ))}
+                        </div>
                         {/* Kontrol Paginasi */}
-                    <div className="flex justify-center items-center gap-4 mt-8">
-                        <button 
-                            onClick={() => muatSepeda(page - 1)}
-                            disabled={page === 0}
-                            className="px-4 py-2 bg-gray-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-700"
-                        >
-                            Sebelumnya
-                        </button>
-                        
-                        <span className="font-semibold text-gray-700">
-                            Halaman {page + 1} dari {totalPages}
-                        </span>
-                        
-                        <button 
-                            onClick={() => muatSepeda(page + 1)}
-                            disabled={page + 1 >= totalPages}
-                            className="px-4 py-2 bg-gray-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-700"
-                        >
-                            Selanjutnya
-                        </button>
+                        <div className="flex justify-center items-center gap-4 mt-8">
+                            <button onClick={() => muatSepeda(page - 1)} disabled={page === 0} className="px-4 py-2 bg-gray-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-700">
+                                Sebelumnya
+                            </button>
+                            <span className="font-semibold text-gray-700">
+                                Halaman {page + 1} dari {totalPages}
+                            </span>
+                            <button onClick={() => muatSepeda(page + 1)} disabled={page + 1 >= totalPages} className="px-4 py-2 bg-gray-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-700">
+                                Selanjutnya
+                            </button>
+                        </div>
+                    </>
+                )
+            ) : (
+                /* TAB 2: AREA TABEL RIWAYAT */
+                <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi {localStorage.getItem('USERNAME')}</h2>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full text-left border-collapse">
+                            <thead className="bg-gray-800 text-white">
+                                <tr>
+                                    <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
+                                    <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
+                                    <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-gray-700">
+                                {riwayatList.length === 0 ? (
+                                    <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                        <td colSpan="3" className="py-3 px-4 text-center">Data Kosong</td>
+                                    </tr>
+                                ) : (                   
+                                    riwayatList.map((item) => (
+                                        <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                            <td className="py-3 px-4">{item.merkSepeda}</td>
+                                            <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
+                                            <td className="py-3 px-4">
+                                                {item.waktuKembali ? new Date(item.waktuKembali).toLocaleString('id-ID') : "Belum dikembalikan"}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
                     </div>
-                </>
+                </div>
             )}
+            {/* ==== SELESAI SIHIR TAB ==== */}
         </div>
         );
     }

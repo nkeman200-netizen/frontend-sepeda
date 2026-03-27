@@ -72,8 +72,14 @@ function Admin() {
                         <td><input id="swal-merk" class="swal2-input" autocomplete="off" value="${sepeda.merk}"></td>
                     </tr>
                     <tr>
-                        <td style="font-weight: bold; font-size: 25px; padding: 5px 0;">Status:</td>
-                        <td><input id="swal-status" autocomplete="off" class="swal2-input" value="${sepeda.status}"></td>
+                        <td style="font-weight: bold; font-size: 20px; padding: 5px 0;">Status:</td>
+                        <td> <!-- 👈 Harus dibungkus TD -->
+                            <select id="swal-status" class="swal2-input" style="width: 100%; margin: 0;">
+                                <option value="tersedia" ${sepeda.status === "tersedia" ? 'selected' : ""}>Tersedia</option>
+                                <option value="dipinjam" ${sepeda.status === "dipinjam" ? 'selected' : ""}>Dipinjam</option>
+                                <option value="rusak" ${sepeda.status === "rusak" ? 'selected' : ""}>Rusak/Servis</option>
+                            </select>
+                        </td>
                     </tr>
                 </table>
             `, //pake html biar fleksibel, plush biar bisa hapus auto-complete nyebelin
@@ -81,7 +87,7 @@ function Admin() {
             confirmButtonText: 'Simpan Perubahan',
             cancelButtonText: 'Batal',
             // preConfirm: Mengambil data dari input HTML murni sebelum dikirim
-            preConfirm: () => { 
+            preConfirm: () => { //sebelum dikkonfirm, ambil/return datanya
                 const merk = document.getElementById('swal-merk').value;
                 const status = document.getElementById('swal-status').value;
                 if (!merk || !status) {

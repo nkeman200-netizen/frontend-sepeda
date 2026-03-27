@@ -192,15 +192,29 @@ function Admin() {
     if (isLoggedIn) {
         return (
         <div className="min-h-screen bg-gray-100 p-8 font-sans">
+            {/* HEADER */}
             <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-md">
-                <div>
-                    <h1 className="text-3xl font-extrabold text-gray-800">Dashboard Admin</h1>
-                    <p className="text-gray-500 mt-1">Sistem Manajemen Peminjaman Sepeda Kampus</p>
+                <div>       
+                    <h1 className="text-3xl font-extrabold text-gray-800">Sepeda Kampus</h1>
                 </div>
-                <button 
-                    onClick={() => handleLogout()} 
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md font-semibold transition duration-200"
-                >
+
+                {/* Bagian Menu Tengah */}
+                <div className="flex gap-4">
+                    <button 
+                        onClick={() => setActiveTab('sepeda')}
+                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'sepeda' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        🚲 Daftar Sepeda
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('riwayat')}
+                        className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'riwayat' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        📜 Riwayatku
+                    </button>
+                </div>
+
+                <button onClick={() => handleLogout()} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md font-semibold transition">
                     Logout
                 </button>
             </div>

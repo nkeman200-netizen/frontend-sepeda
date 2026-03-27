@@ -54,14 +54,12 @@ function Admin() {
         }).then(async(r)=>{ //r mewakili parameter respon dari fire 
             if (r.isConfirmed) {
                 setPesanError('')
-                try {
-                    const response=  await api.delete('/sepeda/'+idSepeda);
-                    Swal.fire(response.data.status, response.data.pesan ,response.data.icon)
-                    if (response.data.icon=="success") {
+                try {await api.delete('/sepeda/'+idSepeda);
+                    Swal.fire('Sukses', 'Sepeda berhasil dihapus', 'success')
                         muatSepeda();
-                    }
                 } catch (error) {
-                    setPesanError('eror ga bisa fetch hapus '+error)
+                    const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
+                    Swal.fire('Gagal Menghapus', pesan, 'error');
                 }
             }
         })

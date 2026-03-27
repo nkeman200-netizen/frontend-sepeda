@@ -44,10 +44,12 @@ function Mahasiswa() {
         }).then(async (r)=>{
             if(r.isConfirmed){
                 try {
-                    const response= await api.post("/pinjam/"+idSepeda, {durasi: parseInt(r.value)})
+                    await api.post("/pinjam/"+idSepeda, {durasi: parseInt(r.value)})
                     // setIdPinjamAktif(response.data.idPinjam);
                     // localStorage.setItem("PINJAM",response.data.idPinjam)
                     muatSepeda();
+                    isPinjam()
+                    muatRiwayat()
                     Swal.fire('Berhasil','Sepeda berhasil dipinjam','success')
                 } catch (error) {
                     const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")

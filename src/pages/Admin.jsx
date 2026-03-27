@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { resolvePath, useNavigate } from 'react-router-dom'; // 👈 PASTIKAN INI ADA
+import { useNavigate } from 'react-router-dom'; // 👈 PASTIKAN INI ADA
 import Swal from 'sweetalert2';
 import api from '../api';
 import Header from '../components/Header';
@@ -17,6 +17,8 @@ function Admin() {
     const [activeTab, setActiveTab] = useState('sepeda');
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    // Tambahkan state ini
+    const [isLoadingSepeda, setIsLoadingSepeda] = useState(false);
     const navigate= useNavigate();
 
     const muatSepeda=async ()=>{   
@@ -24,6 +26,8 @@ function Admin() {
         try {
         const response= await api.get('/sepeda');
         setSepedaList(response.data.content) //response bosy disimpen di response.data.content (kalo data nya array/banyak)
+        setTotalPages(response.data.totalPages)
+        setPage(targetPage)
         } catch (error) {
         setPesanError("gagal menghubungi server");
         }

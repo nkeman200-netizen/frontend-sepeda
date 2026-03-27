@@ -73,8 +73,9 @@ function Mahasiswa() {
                 try {
                     await api.put('/pinjam/'+idPinjam+'/kembali');
                     setIdPinjamAktif(null);
-                    Swal.fire('Berhasil','Sepeda berhasil dikembalikan','success')
                     muatSepeda()
+                    muatRiwayat()
+                    Swal.fire('Berhasil','Sepeda berhasil dikembalikan','success')
                 } catch (error) {
                     const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
                     setPesanError(pesan);

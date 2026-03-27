@@ -11,6 +11,7 @@ function Mahasiswa() {
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [pesanError, setPesanError] = useState('');
     const [sepedaList, setSepedaList]= useState([]);
+    const [riwayatList, setRiwayatList]= useState([]);
     const [idPinjamAktif,setIdPinjamAktif]= useState(null); //untuk memunculkan kembali
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -80,7 +81,7 @@ function Mahasiswa() {
         })
     }
 
-    const isPinjam= async ()=>{
+    const isPinjam= async ()=>{ //cek apakah mahasiswa punya id pinjam yang belum dikekmbaliken
         setPesanError('')
         try {
             // Cukup panggil rute khusus ini
@@ -93,6 +94,16 @@ function Mahasiswa() {
         } catch (error) {
             const pesan= (error.response?.data?.pesan || "Server mati atau masalah jaringan")
             setPesanError(pesan);
+        }
+    }
+    
+    const muatRiwayat= async ()=>{
+        setPesanError('')
+        try {
+            const response= await api.get("pinjam/riwayat");
+            setRiwayatList(response.data)
+        } catch (error) {
+            setPesanError('server ga nyambung '+error)
         }
     }
     
@@ -130,6 +141,7 @@ function Mahasiswa() {
         if (token) {
             setIsLoggedIn(true);
             isPinjam();
+            muatRiwayat(); //kalo udh login
         }
     }, []); // Array kosong berarti HANYA JALAN SEKALI saat halaman pertama dimuat
 
@@ -155,6 +167,43 @@ function Mahasiswa() {
                     Logout
                 </button>
             </div>
+
+            {/* Tabel Riwayat Global */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Riwayat Transaksi {localStorage.getItem('USERNAME')}</h2>
+                <div className="overflow-x-auto">
+                        <table className="min-w-full text-left border-collapse">
+                            <thead className="bg-gray-800 text-white">
+                                <tr>
+                                    <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
+                                    <th className="py-3 px-4 font-semibold">Peminjam</th>
+                                    <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
+                                    <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-gray-700">
+                                {riwayatList.length==0?(
+                                    <tr className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                        <td colSpan="4" className="py-3 px-4 text-center">Data Kosong</td>
+                                    </tr>
+                                ) : (                   
+                                riwayatList.map((item) => (
+                                <tr key={item.idPinjam} className="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                    <td className="py-3 px-4">{item.merkSepeda}</td>
+                                    <td className="py-3 px-4">{item.username}</td>
+                                    <td className="py-3 px-4">{new Date(item.waktuPinjam).toLocaleString('id-ID')}</td>
+                                    <td className="py-3 px-4">{
+                                        item.waktuKembali?(new Date(item.waktuKembali).toLocaleString('id-ID')) 
+                                        : ("Belum dikembalikan")
+                                        }</td>
+                                </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
             {/* Notifikasi Sedang Meminjam */}
             {idPinjamAktif ? (
                 <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg shadow-sm mb-8">

@@ -172,15 +172,15 @@ function Admin() {
     // SIHIR TAHAN F5: Cek memori saat halaman pertama kali dibuka
     useEffect(() => {
         const token = localStorage.getItem('TOKEN');// Ambil ingatan pinjam
-        if (token) {
+        if (token) { //kalo dia punya token aja
             setIsLoggedIn(true);
+            muatRiwayat();
         }
     }, []); // Array kosong berarti HANYA JALAN SEKALI saat halaman pertama dimuat
     
     useEffect(()=>{
             if (isLoggedIn) {
             muatSepeda();
-            muatRiwayat();
             }
         },[isLoggedIn])
     

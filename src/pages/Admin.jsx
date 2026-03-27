@@ -12,6 +12,7 @@ function Admin() {
     const [sepedaList, setSepedaList]= useState([]);
     const [merkInput, setMerkInput]= useState('');
     const [riwayatList, setRiwayatList]= useState([]);
+    const [activeTab, setActiveTab] = useState('sepeda');
     const navigate= useNavigate();
 
     const muatSepeda=async ()=>{   
@@ -204,13 +205,13 @@ function Admin() {
                         onClick={() => setActiveTab('sepeda')}
                         className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'sepeda' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
                     >
-                        🚲 Daftar Sepeda
+                        🚲 Kelola Sepeda
                     </button>
                     <button 
                         onClick={() => setActiveTab('riwayat')}
                         className={`px-4 py-2 font-bold rounded-md transition ${activeTab === 'riwayat' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
                     >
-                        📜 Riwayatku
+                        📜 Riwayat
                     </button>
                 </div>
 
@@ -232,6 +233,7 @@ function Admin() {
                             </div>
                         )}
 
+                        {/* FORM TAMBAH SEPEDA */}
                         <form onSubmit={tambahSepeda} className="flex flex-col sm:flex-row gap-4">
                             <input 
                                 type="text" 
@@ -303,7 +305,7 @@ function Admin() {
                             ))}
                         </div>
                     )}
-                    </>
+                </>
             ):(
                 <>
                     {/* Tabel Riwayat Global */}

@@ -261,7 +261,7 @@ function Mahasiswa() {
                             <thead className="bg-gray-800 text-white">
                                 <tr>
                                     <th className="py-3 px-4 rounded-tl-lg font-semibold">Sepeda</th>
-                                    <th className="py-3 px-4 rounded-tl-lg font-semibold">Durasi</th>
+                                    <th className="py-3 px-4 font-semibold">Durasi (jam)</th>
                                     <th className="py-3 px-4 font-semibold">Waktu Pinjam</th>
                                     <th className="py-3 px-4 rounded-tr-lg font-semibold">Waktu Kembali</th>
                                 </tr>

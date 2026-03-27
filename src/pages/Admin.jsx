@@ -241,7 +241,6 @@ function Admin() {
                     {sepedaList.length === 0 ? (
                         <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                             <DaftarSepeda 
                                 sepedaList={sepedaList}
                                 prosesPinjam={null}
@@ -275,53 +274,6 @@ function Admin() {
                                     </>
                                 )}
                             />
-                            {sepedaList.map((sepeda) => (
-                                <div 
-                                    key={sepeda.id} 
-                                    // Sihir Kondisional Tailwind:
-                                    // Jika dipinjam (merah muda), jika tersedia (hijau muda). 
-                                    // Kita juga tambahkan garis tebal di kiri (border-l(left)-4) sebagai aksen.
-                                    className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md    
-                                        ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}
-                                    `}
-                                >
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-800">{sepeda.merk}</h3>
-                                        <p className={`text-sm font-semibold mt-1 uppercase tracking-wider
-                                            ${sepeda.status === 'dipinjam' ? 'text-red-600' : 'text-green-600'}
-                                        `}>
-                                            {sepeda.status}
-                                        </p>
-                                    </div>
-
-                                    {/* Deretan Tombol Aksi */}
-                                    <div className="mt-6 flex gap-2">
-                                        <button 
-                                            onClick={() => editSepeda(sepeda)} 
-                                            className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button 
-                                            onClick={() => hapusSepeda(sepeda.id)} 
-                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                        >
-                                            Hapus
-                                        </button>
-                                        
-                                        {/* Tombol Lihat (Hanya muncul kalau dipinjam) */}
-                                        {sepeda.status === "dipinjam" && (
-                                            <button 
-                                                onClick={() => lihatPinjam(sepeda.id)} 
-                                                className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition"
-                                            >
-                                                Lihat
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     )}
                 </>
             ):(

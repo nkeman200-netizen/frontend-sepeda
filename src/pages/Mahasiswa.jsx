@@ -214,7 +214,7 @@ function Mahasiswa() {
                 sepedaList.length === 0 ? (
                     <p className="text-gray-500 italic mb-8">Belum ada data sepeda.</p>
                 ) : (
-                    <> //LIST SEPEDA
+                    <> 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                             {sepedaList.map((sepeda) => (
                                 <div key={sepeda.id} className={`p-6 rounded-lg shadow-sm border-l-4 flex flex-col justify-between transition-all hover:shadow-md ${sepeda.status === 'dipinjam' ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}`}>
